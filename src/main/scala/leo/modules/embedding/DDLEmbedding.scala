@@ -14,6 +14,9 @@ object DDLEmbedding {
       |thf(world_type,type,(
       |    world: $tType )).
       |
+      |thf(cw_type, type, (
+      |    cw: world )).
+      |
       |thf(av_type,type,(
       |    av: world > world > $o )).
       |
@@ -233,6 +236,13 @@ object DDLEmbedding {
       |    = ( ^ [P: world > $o] :
       |        ! [W: world] :
       |          ( P @ W ) ) )).
+      |
+      |thf(ddlLocallyValid_type,type,(
+      |    ddlLocallyValid: ( world > $o ) > $o )).
+      |
+      |thf(ddlLocallyValid_def,definition,
+      |    ( ddlLocallyValid
+      |    = ( ^ [P: world > $o] : ( P @ cw ) ))).
     """.stripMargin.trim
 
 
@@ -289,7 +299,13 @@ object DDLEmbedding {
       val sb: StringBuilder = new StringBuilder
       val inputs = ctx.input().asScala.map(_.annotated_formula)
       for (i <- inputs) {
-        sb.append(s"thf(${i.name.getText},${i.formula_role().getText},ddlValid @ (${apply0(i.formula)})).\n")
+        if (i.formula_role().getText == "localAxiom") {
+          sb.append(s"thf(${i.name.getText},axiom,ddlLocallyValid @ (${apply0(i.formula)})).\n")
+        } else if (i.formula_role().getText == "localConjecture") {
+          sb.append(s"thf(${i.name.getText},conjecture,ddlLocallyValid @ (${apply0(i.formula)})).\n")
+        } else {
+          sb.append(s"thf(${i.name.getText},${i.formula_role().getText},ddlValid @ (${apply0(i.formula)})).\n")
+        }
       }
       sb.toString()
     }
