@@ -26,6 +26,14 @@ object DDLEmbedding {
   private final val thfAxiomatization: String =
     """
       |%- Meta-logical axioms
+      |thf(ax_3a, axiom, ![W:world]: (? [X: world]: (av @ W @ X))).
+      |
+      |thf(ax_4a, axiom, ![W:world, X:world]: ( (av @ W @ X) => (pv @ W @ X))).
+      |
+      |thf(ax_4b, axiom, ![W:world]: ( (pv @ W @ W))).
+      |
+      |thf(ax_5a, axiom, ![X:world>$o]: (~(ob @ X @ (^[Y: world]: ($false))))).
+      |
       |thf(ax_5b,axiom,(
       |    ! [X: world > $o,Y: world > $o,Z: world > $o] :
       |      ( ! [W: world] :
