@@ -4,7 +4,6 @@ import java.io.{BufferedReader, StringReader}
 
 import leo.modules.parsers.ddl._
 import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.atn.ATNSimulator
 import org.antlr.v4.runtime.misc.ParseCancellationException
 
 object DDLEmbedding {
