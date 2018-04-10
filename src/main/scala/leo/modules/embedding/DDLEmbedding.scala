@@ -9,21 +9,77 @@ object DDLEmbedding {
 
   private final val thfTypeDeclarations: String =
     """
-      |thf(world_type, type, world: $tType).
-      |thf(av_type, type, av: world > world > $o).
-      |thf(pv_type, type, pv: world > world > $o).
-      |thf(ob_type, type, ob: (world > $o) > (world > $o) > $o).
+      |%- Types of meta-logical symbols
+      |thf(world_type,type,(
+      |    world: $tType )).
+      |
+      |thf(av_type,type,(
+      |    av: world > world > $o )).
+      |
+      |thf(pv_type,type,(
+      |    pv: world > world > $o )).
+      |
+      |thf(ob_type,type,(
+      |    ob: ( world > $o ) > ( world > $o ) > $o )).
     """.stripMargin.trim
   private final val thfAxiomatization: String =
     """
-      |thf(ax_3a, axiom, ![W:world]: (? [X: world]: (av @ W @ X))).
-      |thf(ax_4a, axiom, ![W:world, X:world]: ( (av @ W @ X) => (pv @ W @ X))).
-      |thf(ax_4b, axiom, ![W:world]: ( (pv @ W @ W))).
-      |thf(ax_5a, axiom, ![X:world>$o]: (~(ob @ X @ (^[Y: world]: ($false))))).
-      |thf(ax_5b, axiom, (![X:world>$o,Y:world>$o,Z:world>$o]: ((![W:world]: (((Y @ W) & (X @ W)) <=> ((Z @ W) & (X @ W)))) => ((ob @ X @ Y) <=> (ob @ X @ Z))))).
-      |thf(ax_5c, axiom, ![X:world>$o,BB:(world>$o)>$o]: (   ((![Z:world>$o]: ((BB @ Z) => (ob @ X @ Z))) & (?[Z:world>$o]: (BB @ Z))) => ((? [Y:world]: (((^[W: world]: (![Z:world]: ((BB @ Z) => (Z @ W)))) @ Y) & (X @ Y))) => (ob @ X @ (^[W:world]: (![Z:world>$o]: ((BB @ Z) => (Z @ W)))))) )).
-      |thf(ax_5d, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ (^ [W:world]: (((Z @ W) & (~(X @ W))) | (Y @ W)))))).
-      |thf(ax_5e, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ Z))).
+      |%- Meta-logical axioms
+      |thf(ax_5b,axiom,(
+      |    ! [X: world > $o,Y: world > $o,Z: world > $o] :
+      |      ( ! [W: world] :
+      |          ( ( ( Y @ W )
+      |            & ( X @ W ) )
+      |        <=> ( ( Z @ W )
+      |            & ( X @ W ) ) )
+      |     => ( ( ob @ X @ Y )
+      |      <=> ( ob @ X @ Z ) ) ) )).
+      |
+      |thf(ax_5c,axiom,(
+      |    ! [X: world > $o,BB: ( world > $o ) > $o] :
+      |      ( ( ! [Z: world > $o] :
+      |            ( ( BB @ Z )
+      |           => ( ob @ X @ Z ) )
+      |        & ? [Z: world > $o] :
+      |            ( BB @ Z ) )
+      |     => ( ? [Y: world] :
+      |            ( ( ^ [W: world] :
+      |                ! [Z: world] :
+      |                  ( ( BB @ Z )
+      |                 => ( Z @ W ) )
+      |              @ Y )
+      |            & ( X @ Y ) )
+      |       => ( ob @ X
+      |          @ ^ [W: world] :
+      |            ! [Z: world > $o] :
+      |              ( ( BB @ Z )
+      |             => ( Z @ W ) ) ) ) ) )).
+      |
+      |thf(ax_5d,axiom,(
+      |    ! [X: world > $o,Y: world > $o,Z: world > $o] :
+      |      ( ( ! [W: world] :
+      |            ( ( Y @ W )
+      |           => ( X @ W ) )
+      |        & ( ob @ X @ Z )
+      |        & ? [W: world] :
+      |            ( ( Y @ W )
+      |            & ( Z @ W ) ) )
+      |     => ( ob @ Y
+      |        @ ^ [W: world] :
+      |            ( ( ( Z @ W )
+      |              & ~ ( X @ W ) )
+      |            | ( Y @ W ) ) ) ) )).
+      |
+      |thf(ax_5e,axiom,(
+      |    ! [X: world > $o,Y: world > $o,Z: world > $o] :
+      |      ( ( ! [W: world] :
+      |            ( ( Y @ W )
+      |           => ( X @ W ) )
+      |        & ( ob @ X @ Z )
+      |        & ? [W: world] :
+      |            ( ( Y @ W )
+      |            & ( Z @ W ) ) )
+      |     => ( ob @ Y @ Z ) ) )).
     """.stripMargin.trim
   private final val operatorMap: Map[String, String] = Map(
     "~" -> "ddlNot",
@@ -42,34 +98,132 @@ object DDLEmbedding {
     )
   private final val thfDefinitions: String =
     """
-      |thf(ddlTrue_type, type, ddlTrue: (world > $o)).
-      |thf(ddlTrue_def, definition, ddlTrue = (^ [X:world]: ($true))).
-      |thf(ddlFalse_type, type, ddlFalse: (world > $o)).
-      |thf(ddlFalse_def, definition, ddlFalse = (^ [X:world]: ($false))).
-      |thf(ddlNot_type, type, ddlNot: (world > $o) > (world > $o)).
-      |thf(ddlNot_def, definition, ddlNot = (^[P: (world > $o),W:world]: ~(P @ W))).
-      |thf(ddlAnd_type, type, ddlAnd: (world > $o) > (world > $o) > (world > $o)).
-      |thf(ddlAnd_def, definition, ddlAnd = (^[P: (world > $o),Q:(world > $o), W:world]: ((P @ W) & (Q @ W)))).
-      |thf(ddlOr_type, type, ddlOr: (world > $o) > (world > $o) > (world > $o)).
-      |thf(ddlOr_def, definition, ddlOr = (^[P: (world > $o),Q:(world > $o), W:world]: ((P @ W) | (Q @ W)))).
-      |thf(ddlImplies_type, type, ddlImplies: (world > $o) > (world > $o) > (world > $o)).
-      |thf(ddlImplies_def, definition, ddlImplies = (^[P: (world > $o),Q:(world > $o), W:world]: ((P @ W) => (Q @ W)))).
-      |thf(ddlEquiv_type, type, ddlEquiv: (world > $o) > (world > $o) > (world > $o)).
-      |thf(ddlEquiv_def, definition, ddlEquiv = (^[P: (world > $o),Q:(world > $o), W:world]: ((P @ W) <=> (Q @ W)))).
-      |thf(ddlBoxA_type, type, ddlBoxA: (world > $o) > (world > $o)).
-      |thf(ddlBoxA_def, definition, ddlBoxA = (^[P: (world > $o),W:world]: (![X:world]: ((av @ W @ X) => (P @ X))))).
-      |thf(ddlBoxP_type, type, ddlBoxP: (world > $o) > (world > $o)).
-      |thf(ddlBoxP_def, definition, ddlBoxP = (^[P: (world > $o),W:world]: (![X:world]: ((pv @ W @ X) => (P @ X))))).
-      |thf(ddlBox_type, type, ddlBox: (world > $o) > (world > $o)).
-      |thf(ddlBox_def, definition, ddlBox = (^[P: (world > $o),W:world]: (![X:world]: (P @ X)))).
-      |thf(ddlOA_type, type, ddlOA: (world > $o) > (world > $o)).
-      |thf(ddlOA_def, definition, ddlOA = (^[P: (world > $o),W:world]: ((ob @ (av @ W) @ P) & (?[X:world]: ((av @ W @ X) & (~(P @ X))))))).
-      |thf(ddlOP_type, type, ddlOP: (world > $o) > (world > $o)).
-      |thf(ddlOP_def, definition, ddlOP = (^[P: (world > $o),W:world]: ((ob @ (pv @ W) @ P) & (?[X:world]: ((pv @ W @ X) & (~(P @ X))))))).
-      |thf(ddlO_type, type, ddlO: (world > $o) > (world > $o) > (world > $o)).
-      |thf(ddlO_def, definition, ddlO = (^[P: (world > $o),Q:(world > $o), W:world]: (ob @ P @ Q))).
-      |thf(ddlValid_type, type, ddlValid: (world > $o) > $o).
-      |thf(ddlValid_def, definition, ddlValid = (^ [P:world>$o]: (![W: world]: (P @ W)))).
+      |% Definitions of (meta-)logical connectives
+      |thf(ddlTrue_type,type,(
+      |    ddlTrue: world > $o )).
+      |
+      |thf(ddlTrue_def,definition,
+      |    ( ddlTrue
+      |    = ( ^ [X: world] : $true ) )).
+      |
+      |thf(ddlFalse_type,type,(
+      |    ddlFalse: world > $o )).
+      |
+      |thf(ddlFalse_def,definition,
+      |    ( ddlFalse
+      |    = ( ^ [X: world] : $false ) )).
+      |
+      |thf(ddlNot_type,type,(
+      |    ddlNot: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlNot_def,definition,
+      |    ( ddlNot
+      |    = ( ^ [P: world > $o,W: world] :
+      |          ~ ( P @ W ) ) )).
+      |
+      |thf(ddlAnd_type,type,(
+      |    ddlAnd: ( world > $o ) > ( world > $o ) > world > $o )).
+      |
+      |thf(ddlAnd_def,definition,
+      |    ( ddlAnd
+      |    = ( ^ [P: world > $o,Q: world > $o,W: world] :
+      |          ( ( P @ W )
+      |          & ( Q @ W ) ) ) )).
+      |
+      |thf(ddlOr_type,type,(
+      |    ddlOr: ( world > $o ) > ( world > $o ) > world > $o )).
+      |
+      |thf(ddlOr_def,definition,
+      |    ( ddlOr
+      |    = ( ^ [P: world > $o,Q: world > $o,W: world] :
+      |          ( ( P @ W )
+      |          | ( Q @ W ) ) ) )).
+      |
+      |thf(ddlImplies_type,type,(
+      |    ddlImplies: ( world > $o ) > ( world > $o ) > world > $o )).
+      |
+      |thf(ddlImplies_def,definition,
+      |    ( ddlImplies
+      |    = ( ^ [P: world > $o,Q: world > $o,W: world] :
+      |          ( ( P @ W )
+      |         => ( Q @ W ) ) ) )).
+      |
+      |thf(ddlEquiv_type,type,(
+      |    ddlEquiv: ( world > $o ) > ( world > $o ) > world > $o )).
+      |
+      |thf(ddlEquiv_def,definition,
+      |    ( ddlEquiv
+      |    = ( ^ [P: world > $o,Q: world > $o,W: world] :
+      |          ( ( P @ W )
+      |        <=> ( Q @ W ) ) ) )).
+      |
+      |thf(ddlBoxA_type,type,(
+      |    ddlBoxA: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlBoxA_def,definition,
+      |    ( ddlBoxA
+      |    = ( ^ [P: world > $o,W: world] :
+      |        ! [X: world] :
+      |          ( ( av @ W @ X )
+      |         => ( P @ X ) ) ) )).
+      |
+      |thf(ddlBoxP_type,type,(
+      |    ddlBoxP: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlBoxP_def,definition,
+      |    ( ddlBoxP
+      |    = ( ^ [P: world > $o,W: world] :
+      |        ! [X: world] :
+      |          ( ( pv @ W @ X )
+      |         => ( P @ X ) ) ) )).
+      |
+      |thf(ddlBox_type,type,(
+      |    ddlBox: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlBox_def,definition,
+      |    ( ddlBox
+      |    = ( ^ [P: world > $o,W: world] :
+      |        ! [X: world] :
+      |          ( P @ X ) ) )).
+      |
+      |thf(ddlOA_type,type,(
+      |    ddlOA: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlOA_def,definition,
+      |    ( ddlOA
+      |    = ( ^ [P: world > $o,W: world] :
+      |          ( ( ob @ ( av @ W ) @ P )
+      |          & ? [X: world] :
+      |              ( ( av @ W @ X )
+      |              & ~ ( P @ X ) ) ) ) )).
+      |
+      |thf(ddlOP_type,type,(
+      |    ddlOP: ( world > $o ) > world > $o )).
+      |
+      |thf(ddlOP_def,definition,
+      |    ( ddlOP
+      |    = ( ^ [P: world > $o,W: world] :
+      |          ( ( ob @ ( pv @ W ) @ P )
+      |          & ? [X: world] :
+      |              ( ( pv @ W @ X )
+      |              & ~ ( P @ X ) ) ) ) )).
+      |
+      |thf(ddlO_type,type,(
+      |    ddlO: ( world > $o ) > ( world > $o ) > world > $o )).
+      |
+      |thf(ddlO_def,definition,
+      |    ( ddlO
+      |    = ( ^ [P: world > $o,Q: world > $o,W: world] :
+      |          ( ob @ P @ Q ) ) )).
+      |
+      |thf(ddlValid_type,type,(
+      |    ddlValid: ( world > $o ) > $o )).
+      |
+      |thf(ddlValid_def,definition,
+      |    ( ddlValid
+      |    = ( ^ [P: world > $o] :
+      |        ! [W: world] :
+      |          ( P @ W ) ) )).
     """.stripMargin.trim
 
 
@@ -88,6 +242,8 @@ object DDLEmbedding {
     sb.append('\n')
     sb.append(thfDefinitions)
     sb.append('\n')
+    sb.append('\n')
+    sb.append("% Embedded user problem:\n")
     sb.append(printUserTypes(translator.getSymbols))
     // print embedded problem
     sb.append(result)
