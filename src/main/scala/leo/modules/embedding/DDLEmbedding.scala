@@ -4,6 +4,8 @@ import java.io.{BufferedReader, StringReader}
 
 import leo.modules.parsers.ddl._
 import org.antlr.v4.runtime._
+import org.antlr.v4.runtime.atn.ATNSimulator
+import org.antlr.v4.runtime.misc.ParseCancellationException
 
 object DDLEmbedding {
 
@@ -261,8 +263,12 @@ object DDLEmbedding {
   protected final def parseDDLFile(input: java.io.BufferedReader): DDLParser.FileContext = {
     val inputStream = CharStreams.fromReader(input)
     val lexer = new DDLLexer(inputStream)
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(DDLParseErrorListener())
     val tokenStream = new CommonTokenStream(lexer)
     val parser = new DDLParser(tokenStream)
+    parser.removeErrorListeners()
+    parser.addErrorListener(DDLParseErrorListener())
     parser.file()
   }
 
@@ -356,5 +362,15 @@ object DDLEmbedding {
         }
       }
     }
+  }
+
+  class DDLParseErrorListener extends BaseErrorListener {
+    override def syntaxError(recognizer: Recognizer[_, _], offendingSymbol: scala.Any, line: Int, charPositionInLine: Int, msg: String, e: RecognitionException): Unit = {
+      throw new ParseCancellationException(s"Parse error in $line:$charPositionInLine. $msg")
+    }
+  }
+  object DDLParseErrorListener {
+    private final val instance = new DDLParseErrorListener
+    final def apply(): DDLParseErrorListener = instance
   }
 }
