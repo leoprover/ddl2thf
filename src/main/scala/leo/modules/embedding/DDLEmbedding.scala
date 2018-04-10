@@ -11,8 +11,8 @@ object DDLEmbedding {
     """
       |thf(world_type, type, world: $tType).
       |thf(av_type, type, av: world > world > $o).
-      |thf(pv_type, type, av: world > world > $o).
-      |thf(ob_type, type, av: (world > $o) > (world > $o) > $o).
+      |thf(pv_type, type, pv: world > world > $o).
+      |thf(ob_type, type, ob: (world > $o) > (world > $o) > $o).
     """.stripMargin.trim
   private final val thfAxiomatization: String =
     """
@@ -20,10 +20,10 @@ object DDLEmbedding {
       |thf(ax_4a, axiom, ![W:world, X:world]: ( (av @ W @ X) => (pv @ W @ X))).
       |thf(ax_4b, axiom, ![W:world]: ( (pv @ W @ W))).
       |thf(ax_5a, axiom, ![X:world>$o]: (~(ob @ X @ (^[Y: world]: ($false))))).
-      |thf(ax_5b, axiom, (![X:world>$o,Y:world>$o,Z:world>$o]: (![W:world]: (((Y @ W) & (X @ W)) <=> ((Z @ W) & (X @ W)))) => ((ob @ X @ Y) <=> (ob @ X @ Z)))).
-      |thf(ax_5c, axiom, ...).
-      |thf(ax_5d, axiom, ...).
-      |thf(ax_5e, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => X @ W)) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => ob @ Y @ Z)).
+      |thf(ax_5b, axiom, (![X:world>$o,Y:world>$o,Z:world>$o]: ((![W:world]: (((Y @ W) & (X @ W)) <=> ((Z @ W) & (X @ W)))) => ((ob @ X @ Y) <=> (ob @ X @ Z))))).
+      |thf(ax_5c, axiom, ![X:world>$o,BB:(world>$o)>$o]: (   ((![Z:world>$o]: ((BB @ Z) => (ob @ X @ Z))) & (?[Z:world>$o]: (BB @ Z))) => ... )).
+      |thf(ax_5d, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ (^ [W:world]: (((Z @ W) & (~(X @ W))) | (Y @ W)))))).
+      |thf(ax_5e, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ Z))).
     """.stripMargin.trim
   private final val operatorMap: Map[String, String] = Map(
     "~" -> "ddlNot",
