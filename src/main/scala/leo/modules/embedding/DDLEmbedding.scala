@@ -21,7 +21,7 @@ object DDLEmbedding {
       |thf(ax_4b, axiom, ![W:world]: ( (pv @ W @ W))).
       |thf(ax_5a, axiom, ![X:world>$o]: (~(ob @ X @ (^[Y: world]: ($false))))).
       |thf(ax_5b, axiom, (![X:world>$o,Y:world>$o,Z:world>$o]: ((![W:world]: (((Y @ W) & (X @ W)) <=> ((Z @ W) & (X @ W)))) => ((ob @ X @ Y) <=> (ob @ X @ Z))))).
-      |thf(ax_5c, axiom, ![X:world>$o,BB:(world>$o)>$o]: (   ((![Z:world>$o]: ((BB @ Z) => (ob @ X @ Z))) & (?[Z:world>$o]: (BB @ Z))) => ((? [Y:world]: (((^[W: world]: (![Z:world]: ((BB @ Z) => (Z @ W)))) @ Y) & (X @ Y))) => (ob @ X @ (^[W:world]: (![Z:world>$o]: ((BB @ Z) => (Z @ W)))))) ))
+      |thf(ax_5c, axiom, ![X:world>$o,BB:(world>$o)>$o]: (   ((![Z:world>$o]: ((BB @ Z) => (ob @ X @ Z))) & (?[Z:world>$o]: (BB @ Z))) => ((? [Y:world]: (((^[W: world]: (![Z:world]: ((BB @ Z) => (Z @ W)))) @ Y) & (X @ Y))) => (ob @ X @ (^[W:world]: (![Z:world>$o]: ((BB @ Z) => (Z @ W)))))) )).
       |thf(ax_5d, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ (^ [W:world]: (((Z @ W) & (~(X @ W))) | (Y @ W)))))).
       |thf(ax_5e, axiom, ![X:world>$o,Y:world>$o,Z:world>$o]: (((![W: world]: ((Y @ W) => (X @ W))) & (ob @ X @ Z) & (? [W:world]: ((Y @ W) & (Z @ W)))) => (ob @ Y @ Z))).
     """.stripMargin.trim
