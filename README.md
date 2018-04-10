@@ -32,7 +32,7 @@ DDL formulas are given by
 | `p` *where `p` is any lower-case string*  | Propositional variable  |
 | `~ p` | Negation of `p`  |
 | `p & q` | Conjuction of `p` and `q` |
-| `p | q` | Disjunction of `p` and `q` |
+| `p \| q` | Disjunction of `p` and `q` |
 | `p => q` | Implication from `p` to `q` |
 | `p <=> q` | Equivalence of `p` and `q` |
 | `$box_a(p)` | In all actual worlds `q` |
