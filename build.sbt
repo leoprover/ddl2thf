@@ -2,7 +2,7 @@
 lazy val commonSettings = Seq(
   version := "1.0",
   scalaVersion := "2.12.5",
-  organization := "org.leo",
+  organization := "leo",
   test in assembly := {},
   logLevel := Level.Warn,
   logLevel in assembly := Level.Error

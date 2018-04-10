@@ -46,7 +46,7 @@ object DDLEmbedding {
       |            ( BB @ Z ) )
       |     => ( ? [Y: world] :
       |            ( ( ^ [W: world] :
-      |                ! [Z: world] :
+      |                ! [Z: world > $o] :
       |                  ( ( BB @ Z )
       |                 => ( Z @ W ) )
       |              @ Y )
