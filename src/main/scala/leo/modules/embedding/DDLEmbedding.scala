@@ -295,9 +295,9 @@ object DDLEmbedding {
 
     final def getSymbols: Set[String] = symbols0
     private def apply0(ctx: DDLParser.FileContext): String = {
-      import scala.collection.JavaConverters._
+      import scala.jdk.javaapi.CollectionConverters.asScala
       val sb: StringBuilder = new StringBuilder
-      val inputs = ctx.input().asScala.map(_.annotated_formula)
+      val inputs = asScala(ctx.input()).map(_.annotated_formula)
       for (i <- inputs) {
         if (i.formula_role().getText == "localAxiom") {
           sb.append(s"thf(${i.name.getText},axiom,ddlLocallyValid @ (${apply0(i.formula)})).\n")

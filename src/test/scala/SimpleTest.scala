@@ -1,7 +1,7 @@
 import leo.modules.embedding.DDLEmbedding
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class SimpleTest extends FunSuite {
+class SimpleTest extends AnyFunSuite {
   test("test 1") {
     val input = "ddl(a, axiom, a)."
     val result = DDLEmbedding(input)
