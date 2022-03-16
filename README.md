@@ -1,6 +1,13 @@
 # ddl2thf
 DDL2THF -- A preprocessor for translating problems in Dyadic Deontic Logic into THF problems
 
+-------
+
+**⚠️ This repository is archived, its functionality is superseded by the logic embedding tool at [github.com/leoprover/logic-embedding](https://github.com/leoprover/logic-embedding).**
+
+-------
+
+
 ## Synopsis
 The tool translates a problem statement formulated in Carmo/Jones' Dyadic Deontic Logic [1] into
 the standard THF format [2] for higher-order theorem provers. This translation employs
